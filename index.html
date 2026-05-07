@@ -4,35 +4,37 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>RMA Portal — MultiSafepay</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #f4f6f9;
-    --surface: #ffffff;
-    --border: #e2e6ed;
-    --border-focus: #0a5af5;
-    --text-primary: #0d1117;
-    --text-secondary: #5a6478;
-    --text-muted: #9aa3b2;
-    --accent: #0a5af5;
-    --accent-light: #e8effe;
-    --success: #16a34a;
-    --success-light: #dcfce7;
+    --primary: #003057;
+    --accent: #0EAAF1;
+    --bg: #F0F4F8;
+    --surface: #FFFFFF;
+    --border: #D6E4EF;
+    --border-focus: #0EAAF1;
+    --text-primary: #0D1E2E;
+    --text-secondary: #4A6580;
+    --text-muted: #7B8E9F;
+    --accent-light: rgba(14,170,241,0.16);
+    --shadow: 0 1px 3px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.08);
+    --shadow-lg: 0 10px 48px rgba(0,0,0,.12);
+    --radius: 14px;
     --error: #dc2626;
     --error-light: #fee2e2;
     --warning: #d97706;
     --warning-light: #fef3c7;
-    --step-inactive: #d1d5db;
-    --radius: 10px;
-    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
-    --shadow-lg: 0 8px 32px rgba(0,0,0,.12);
   }
 
   body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(145deg, rgba(255,255,255,0.92), rgba(14,170,241,0.08) 55%, rgba(255,255,255,0.94)),
+      repeating-linear-gradient(135deg, rgba(14,170,241,0.06) 0px, rgba(14,170,241,0.06) 1px, transparent 1px, transparent 24px);
+    background-attachment: fixed;
     color: var(--text-primary);
     min-height: 100vh;
   }
@@ -52,19 +54,20 @@
   }
   .nav-logo {
     font-size: 15px;
-    font-weight: 600;
-    color: var(--text-primary);
+    font-weight: 700;
+    color: var(--primary);
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   }
-  .nav-logo-mark {
-    width: 28px; height: 28px;
-    background: var(--accent);
-    border-radius: 7px;
-    display: flex; align-items: center; justify-content: center;
+  .nav-logo img {
+    display: block;
+    width: auto;
+    height: 28px;
   }
-  .nav-logo-mark svg { width: 16px; height: 16px; fill: white; }
+  .nav-logo span {
+    letter-spacing: -0.02em;
+  }
   .nav-right { display: flex; align-items: center; gap: 16px; }
   .nav-help {
     font-size: 13px;
@@ -94,56 +97,44 @@
     display: flex;
     align-items: center;
     padding: 0 32px;
+    gap: 10px;
   }
   .step-item {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 10px;
-    flex: 1;
-    position: relative;
-  }
-  .step-item:not(:last-child)::after {
-    content: '';
-    flex: 1;
-    height: 2px;
-    background: var(--step-inactive);
-    margin: 0 8px;
-    border-radius: 2px;
-    transition: background .3s;
-  }
-  .step-item.completed::after { background: var(--accent); }
-  .step-circle {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    border: 2px solid var(--step-inactive);
-    background: var(--surface);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-    flex-shrink: 0;
+    padding: 12px 18px;
+    border-radius: 999px;
+    background: #F8FBFF;
+    color: var(--text-secondary);
+    flex: none;
     transition: all .3s;
-    font-family: 'DM Mono', monospace;
   }
-  .step-item.completed .step-circle {
+  .step-item.completed,
+  .step-item.active {
     background: var(--accent);
-    border-color: var(--accent);
     color: white;
   }
-  .step-item.active .step-circle {
-    border-color: var(--accent);
-    color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-light);
+  .step-item:not(:last-child)::after { display: none; }
+  .step-circle {
+    width: auto;
+    height: auto;
+    padding: 0;
+    border-radius: 999px;
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    font-weight: 700;
+    color: inherit;
+    font-family: 'DM Mono', monospace;
   }
   .step-label {
     font-size: 13px;
     font-weight: 500;
-    color: var(--text-muted);
+    color: inherit;
     white-space: nowrap;
     transition: color .3s;
   }
-  .step-item.active .step-label { color: var(--accent); }
-  .step-item.completed .step-label { color: var(--text-secondary); }
 
   /* ── MAIN LAYOUT ── */
   .main { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
@@ -179,11 +170,12 @@
   .card {
     background: var(--surface);
     border: 1.5px solid var(--border);
+    border-left: 6px solid var(--accent);
     border-radius: var(--radius);
     padding: 28px;
-    transition: border-color .2s, box-shadow .2s;
+    transition: border-color .2s, box-shadow .2s, transform .2s;
   }
-  .card:hover { border-color: #c5cdd9; box-shadow: var(--shadow); }
+  .card:hover { border-color: rgba(14,170,241,0.35); box-shadow: var(--shadow); transform: translateY(-1px); }
   .card-title {
     font-size: 16px;
     font-weight: 600;
@@ -239,7 +231,8 @@
     margin-top: 8px;
     animation: fadeIn .2s ease;
   }
-  .detect-badge.success { display: flex; background: var(--success-light); color: var(--success); }
+  .detect-badge.success { display: flex; background: var(--accent); color: white; }
+  .detect-badge.success .detect-dot { background: white; }
   .detect-badge.error { display: flex; background: var(--error-light); color: var(--error); }
   .detect-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 
@@ -372,7 +365,7 @@
     width: 100%;
   }
   input[type=text]:focus, input[type=email]:focus, select:focus, textarea:focus {
-    border-color: var(--border-focus);
+    border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-light);
   }
   textarea { resize: vertical; min-height: 80px; }
@@ -470,8 +463,9 @@
   .bottom-bar {
     position: fixed;
     bottom: 0; left: 0; right: 0;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
+    background: var(--primary);
+    color: white;
+    border-top: 1px solid rgba(255,255,255,0.16);
     padding: 14px 32px;
     display: flex;
     justify-content: flex-end;
@@ -479,6 +473,12 @@
     gap: 12px;
     z-index: 50;
   }
+  .bottom-bar .btn-secondary {
+    background: rgba(255,255,255,0.08);
+    color: white;
+    border-color: rgba(255,255,255,0.24);
+  }
+  .bottom-bar .btn-secondary:hover { background: rgba(255,255,255,0.14); }
 
   .btn {
     padding: 10px 22px;
@@ -493,7 +493,7 @@
   }
   .btn-primary {
     background: var(--accent);
-    color: white;
+    color: var(--primary);
   }
   .btn-primary:hover { background: #0848d4; }
   .btn-primary:disabled { background: #a0b4f5; cursor: not-allowed; }
@@ -544,10 +544,8 @@
 <!-- NAV -->
 <nav>
   <div class="nav-logo">
-    <div class="nav-logo-mark">
-      <svg viewBox="0 0 16 16"><path d="M8 2L2 5v6l6 3 6-3V5L8 2zm0 1.5L12.5 6 8 8.5 3.5 6 8 3.5zM3 6.9l4.5 2.25v3.7L3 10.6V6.9zm5.5 5.95V9.15L13 6.9v3.7l-4.5 2.25z"/></svg>
-    </div>
-    MultiSafepay — RMA Portal
+    <img src="logo.png" alt="MultiSafepay" height="28"/>
+    <span>MultiSafepay RMA Portal</span>
   </div>
   <div class="nav-right">
     <a href="#" class="nav-help">
@@ -772,6 +770,7 @@ const SN_MAP = {
 let terminals = []; // [{sn, type}]
 let currentScreen = 'devices';
 let reasons = {};
+let descriptions = {};
 
 const screens = ['devices', 'contact', 'summary', 'success'];
 const stepIds = ['step1', 'step2', 'step3', 'step4'];
@@ -982,23 +981,31 @@ function renderContactTerminals() {
 
 function renderReasonFields() {
   const el = document.getElementById('reason-fields');
-  el.innerHTML = terminals.map((t, i) => `
-    <div class="form-field" style="margin-bottom:14px">
-      <label>
-        <span style="font-family:'DM Mono',monospace;color:var(--accent)">${t.sn}</span>
-        — ${t.type} <span class="required">*</span>
-      </label>
-      <select id="reason-${i}" onchange="reasons['${t.sn}']=this.value">
-        <option value="">Select a reason…</option>
-        <option value="Screen defect">Screen defect</option>
-        <option value="Does not power on">Does not power on</option>
-        <option value="Connectivity issue">Connectivity issue</option>
-        <option value="Card reader defect">Card reader defect</option>
-        <option value="Physical damage">Physical damage</option>
-        <option value="Other">Other</option>
-      </select>
-    </div>
-  `).join('');
+  el.innerHTML = terminals.map((t, i) => {
+    const prevReason = reasons[t.sn] || '';
+    const prevDesc = descriptions[t.sn] || '';
+    return `
+      <div class="form-field" style="margin-bottom:14px">
+        <label>
+          <span style="font-family:'DM Mono',monospace;color:var(--accent)">${t.sn}</span>
+          — ${t.type} <span class="required">*</span>
+        </label>
+        <select id="reason-${i}" onchange="reasons['${t.sn}']=this.value">
+          <option value="" ${prevReason === '' ? 'selected' : ''}>Select a reason…</option>
+          <option value="Screen defect" ${prevReason === 'Screen defect' ? 'selected' : ''}>Screen defect</option>
+          <option value="Does not power on" ${prevReason === 'Does not power on' ? 'selected' : ''}>Does not power on</option>
+          <option value="Connectivity issue" ${prevReason === 'Connectivity issue' ? 'selected' : ''}>Connectivity issue</option>
+          <option value="Card reader defect" ${prevReason === 'Card reader defect' ? 'selected' : ''}>Card reader defect</option>
+          <option value="Physical damage" ${prevReason === 'Physical damage' ? 'selected' : ''}>Physical damage</option>
+          <option value="Other" ${prevReason === 'Other' ? 'selected' : ''}>Other</option>
+        </select>
+        <div class="form-field">
+          <label>Description of the problem <span class="required">*</span></label>
+          <textarea id="desc-${i}" placeholder="Describe the issue as specifically as possible…" oninput="descriptions['${t.sn}']=this.value">${prevDesc}</textarea>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 function validateContact() {
@@ -1009,11 +1016,14 @@ function validateContact() {
     if (!el.value.trim()) { el.style.borderColor = 'var(--error)'; ok = false; }
     else el.style.borderColor = '';
   });
-  // check all reasons
+  // check all reasons and descriptions
   terminals.forEach((t, i) => {
     const sel = document.getElementById('reason-' + i);
+    const desc = document.getElementById('desc-' + i);
     if (!sel.value) { sel.style.borderColor = 'var(--error)'; ok = false; }
     else { sel.style.borderColor = ''; reasons[t.sn] = sel.value; }
+    if (!desc.value.trim()) { desc.style.borderColor = 'var(--error)'; ok = false; }
+    else { desc.style.borderColor = ''; descriptions[t.sn] = desc.value; }
   });
   if (!ok) {
     const firstError = document.querySelector('[style*="var(--error)"]');
@@ -1056,7 +1066,8 @@ function submitRequest() {
     terminals: terminals.map(t => ({
       sn: t.sn,
       type: t.type,
-      reason: reasons[t.sn]
+      reason: reasons[t.sn],
+      description: descriptions[t.sn]
     }))
   };
 
@@ -1080,7 +1091,7 @@ function submitRequest() {
 }
 
 function resetPortal() {
-  terminals = []; reasons = {};
+  terminals = []; reasons = {}; descriptions = {};
   renderTerminalList();
   showScreen('devices');
   document.getElementById('btn-continue').style.display = 'inline-flex';
