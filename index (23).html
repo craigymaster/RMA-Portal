@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RMA Portal — MultiSafepay</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f4f6f9;
+    --surface: #ffffff;
+    --border: #e2e6ed;
+    --border-focus: #0a5af5;
+    --text-primary: #0d1117;
+    --text-secondary: #5a6478;
+    --text-muted: #9aa3b2;
+    --accent: #0a5af5;
+    --accent-light: #e8effe;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --error: #dc2626;
+    --error-light: #fee2e2;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --step-inactive: #d1d5db;
+    --radius: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,.12);
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+  }
+
+  /* ── TOP NAV ── */
+  nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-logo {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .nav-logo-mark {
+    width: 28px; height: 28px;
+    background: var(--accent);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav-logo-mark svg { width: 16px; height: 16px; fill: white; }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-help {
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .nav-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── STEPPER ── */
+  .stepper-wrap {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 0;
+  }
+  .stepper {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+  }
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    position: relative;
+  }
+  .step-item:not(:last-child)::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: var(--step-inactive);
+    margin: 0 8px;
+    border-radius: 2px;
+    transition: background .3s;
+  }
+  .step-item.completed::after { background: var(--accent); }
+  .step-circle {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--step-inactive);
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    transition: all .3s;
+    font-family: 'DM Mono', monospace;
+  }
+  .step-item.completed .step-circle {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+  .step-item.active .step-circle {
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+  .step-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    white-space: nowrap;
+    transition: color .3s;
+  }
+  .step-item.active .step-label { color: var(--accent); }
+  .step-item.completed .step-label { color: var(--text-secondary); }
+
+  /* ── MAIN LAYOUT ── */
+  .main { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .page-title {
+    font-size: 28px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+  .page-subtitle {
+    font-size: 15px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  /* ── SCREEN ── */
+  .screen { display: none; animation: fadeIn .25s ease; }
+  .screen.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── CARD GRID ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 600px) { .card-grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .card:hover { border-color: #c5cdd9; box-shadow: var(--shadow); }
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .card-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  /* ── SEARCH INPUT ── */
+  .input-wrap {
+    position: relative;
+    margin-bottom: 10px;
+  }
+  .sn-input {
+    width: 100%;
+    padding: 11px 44px 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--surface);
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    letter-spacing: 0.5px;
+  }
+  .sn-input:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+  .sn-input.error { border-color: var(--error); box-shadow: 0 0 0 3px var(--error-light); }
+  .sn-input.success { border-color: var(--success); box-shadow: 0 0 0 3px var(--success-light); }
+  .input-icon {
+    position: absolute;
+    right: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+
+  .detect-badge {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 8px;
+    animation: fadeIn .2s ease;
+  }
+  .detect-badge.success { display: flex; background: var(--success-light); color: var(--success); }
+  .detect-badge.error { display: flex; background: var(--error-light); color: var(--error); }
+  .detect-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+  .help-link {
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-top: 8px;
+  }
+  .help-link:hover { text-decoration: underline; }
+
+  /* ── ADDED TERMINALS LIST ── */
+  .terminals-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .terminal-tag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--accent-light);
+    border: 1px solid #c5d8fc;
+    border-radius: 8px;
+    font-size: 13px;
+    animation: fadeIn .2s ease;
+  }
+  .terminal-tag-left { display: flex; align-items: center; gap: 10px; }
+  .terminal-tag-sn { font-family: 'DM Mono', monospace; font-weight: 500; color: var(--accent); }
+  .terminal-tag-type { color: var(--text-secondary); font-size: 12px; }
+  .terminal-remove {
+    background: none; border: none; cursor: pointer;
+    color: var(--text-muted); font-size: 16px; line-height: 1;
+    padding: 2px 4px; border-radius: 4px;
+    transition: color .15s, background .15s;
+  }
+  .terminal-remove:hover { color: var(--error); background: var(--error-light); }
+
+  .add-btn {
+    width: 100%;
+    padding: 10px;
+    background: none;
+    border: 1.5px dashed var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    margin-top: 12px;
+    transition: background .15s, border-color .15s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .add-btn:hover { background: var(--accent-light); border-color: var(--accent); }
+  .add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ── CSV UPLOAD ── */
+  .csv-drop {
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+    position: relative;
+  }
+  .csv-drop:hover, .csv-drop.drag-over {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+  .csv-drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .csv-icon { font-size: 28px; margin-bottom: 8px; }
+  .csv-drop p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+  .csv-drop strong { color: var(--accent); }
+  .csv-info-link {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 13px; color: var(--accent); font-weight: 500;
+    text-decoration: none; margin-top: 16px;
+  }
+  .csv-info-link:hover { text-decoration: underline; }
+
+  /* ── SCREEN 2: FORM ── */
+  .form-section {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+  .form-section-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .form-section-icon {
+    width: 22px; height: 22px;
+    background: var(--accent-light);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+  }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-grid.single { grid-template-columns: 1fr; }
+  @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
+
+  .form-field { display: flex; flex-direction: column; gap: 6px; }
+  .form-field.span2 { grid-column: span 2; }
+  @media (max-width: 560px) { .form-field.span2 { grid-column: span 1; } }
+
+  label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  label .required { color: var(--error); margin-left: 2px; }
+
+  input[type=text], input[type=email], select, textarea {
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--surface);
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    width: 100%;
+  }
+  input[type=text]:focus, input[type=email]:focus, select:focus, textarea:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+  textarea { resize: vertical; min-height: 80px; }
+  select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235a6478' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+
+  /* ── TERMINAL SUMMARY IN FORM ── */
+  .terminal-summary-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--bg);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .terminal-summary-sn { font-family: 'DM Mono', monospace; font-weight: 500; }
+  .terminal-summary-type {
+    font-size: 12px;
+    padding: 3px 8px;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  /* ── SCREEN 3: SUMMARY ── */
+  .summary-section {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .summary-header {
+    padding: 14px 20px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .summary-row {
+    display: flex;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-label { width: 180px; flex-shrink: 0; color: var(--text-secondary); font-size: 13px; }
+  .summary-value { color: var(--text-primary); font-weight: 500; }
+  .summary-value.mono { font-family: 'DM Mono', monospace; }
+
+  .submit-notice {
+    background: var(--warning-light);
+    border: 1px solid #fcd34d;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #92400e;
+    margin-bottom: 24px;
+    display: flex; align-items: flex-start; gap: 10px;
+    line-height: 1.5;
+  }
+
+  /* ── SCREEN 4: SUCCESS ── */
+  .success-wrap {
+    text-align: center;
+    padding: 60px 20px;
+  }
+  .success-icon {
+    width: 64px; height: 64px;
+    background: var(--success-light);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 28px;
+  }
+  .success-title { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+  .success-sub { font-size: 15px; color: var(--text-secondary); margin-bottom: 28px; line-height: 1.5; }
+  .ticket-ref {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--accent);
+    background: var(--accent-light);
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin-bottom: 28px;
+    letter-spacing: 1px;
+  }
+
+  /* ── BOTTOM BAR ── */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    z-index: 50;
+  }
+
+  .btn {
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all .15s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+  .btn-primary:hover { background: #0848d4; }
+  .btn-primary:disabled { background: #a0b4f5; cursor: not-allowed; }
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text-primary);
+    border: 1.5px solid var(--border);
+  }
+  .btn-secondary:hover { background: var(--bg); }
+  .btn-ghost {
+    background: none; border: none;
+    color: var(--accent); font-size: 14px; font-weight: 500;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+  }
+
+  /* ── LOADING ── */
+  .btn-loading { position: relative; color: transparent !important; }
+  .btn-loading::after {
+    content: '';
+    position: absolute;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin .6s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── MISC ── */
+  .divider { text-align: center; color: var(--text-muted); font-size: 12px; margin: 16px 0; position: relative; }
+  .divider::before { content: ''; position: absolute; left: 0; top: 50%; width: 45%; height: 1px; background: var(--border); }
+  .divider::after { content: ''; position: absolute; right: 0; top: 50%; width: 45%; height: 1px; background: var(--border); }
+
+  .info-banner {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    background: #f0f4ff;
+    border: 1px solid #c5d4fc;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #1e3a8a;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 16 16"><path d="M8 2L2 5v6l6 3 6-3V5L8 2zm0 1.5L12.5 6 8 8.5 3.5 6 8 3.5zM3 6.9l4.5 2.25v3.7L3 10.6V6.9zm5.5 5.95V9.15L13 6.9v3.7l-4.5 2.25z"/></svg>
+    </div>
+    MultiSafepay — RMA Portal
+  </div>
+  <div class="nav-right">
+    <a href="#" class="nav-help">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 11a1 1 0 110-2 1 1 0 010 2zm1-3.5H7V5h2v3.5z"/></svg>
+      Help
+    </a>
+    <div class="nav-avatar">J</div>
+  </div>
+</nav>
+
+<!-- STEPPER -->
+<div class="stepper-wrap">
+  <div class="stepper">
+    <div class="step-item completed" id="step1">
+      <div class="step-circle">✓</div>
+      <span class="step-label">Your request</span>
+    </div>
+    <div class="step-item active" id="step2">
+      <div class="step-circle">2</div>
+      <span class="step-label">Devices</span>
+    </div>
+    <div class="step-item" id="step3">
+      <div class="step-circle">3</div>
+      <span class="step-label">Contact details</span>
+    </div>
+    <div class="step-item" id="step4">
+      <div class="step-circle">4</div>
+      <span class="step-label">Summary</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SCREEN 1: DEVICES -->
+  <div class="screen active" id="screen-devices">
+    <h1 class="page-title">Which devices do you want to return?</h1>
+    <p class="page-subtitle">Provide the serial number(s) of the device(s) using one of the options below.</p>
+
+    <div class="card-grid">
+      <!-- Manual SN -->
+      <div class="card">
+        <div class="card-title">Search for a terminal</div>
+        <div class="card-desc">Provide the serial number of the device. The terminal type is detected automatically.</div>
+
+        <div class="input-wrap">
+          <input class="sn-input" id="sn-input" type="text" placeholder="e.g. PA1234567890" maxlength="20" autocomplete="off" spellcheck="false"/>
+          <span class="input-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M11.5 7a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zm-1.5 0a3 3 0 10-6 0 3 3 0 006 0zm.97 3.03l2.5 2.5-1.06 1.06-2.5-2.5 1.06-1.06z"/></svg>
+          </span>
+        </div>
+
+        <div class="detect-badge" id="detect-badge">
+          <span class="detect-dot"></span>
+          <span id="detect-text"></span>
+        </div>
+
+        <a href="#" class="help-link">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 11a1 1 0 110-2 1 1 0 010 2zm1-3.5H7V5h2v3.5z"/></svg>
+          Where can I find the serial number?
+        </a>
+
+        <div class="terminals-list" id="terminals-list"></div>
+
+        <button class="add-btn" id="add-btn" disabled>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Add terminal
+        </button>
+      </div>
+
+      <!-- CSV Upload -->
+      <div class="card">
+        <div class="card-title">Upload CSV file</div>
+        <div class="card-desc">Have multiple terminals? Upload a CSV file with one serial number per row.</div>
+
+        <div class="csv-drop" id="csv-drop">
+          <input type="file" accept=".csv" id="csv-input"/>
+          <div class="csv-icon">📎</div>
+          <p><strong>Click to upload</strong> or drag and drop<br/>CSV file, one SN per row</p>
+        </div>
+
+        <a href="#" class="csv-info-link">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 11a1 1 0 110-2 1 1 0 010 2zm1-3.5H7V5h2v3.5z"/></svg>
+          View CSV file description
+        </a>
+
+        <div id="csv-result" style="margin-top:12px;"></div>
+      </div>
+    </div>
+
+    <div class="info-banner" id="no-terminals-banner">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 11a1 1 0 110-2 1 1 0 010 2zm1-3.5H7V5h2v3.5z"/></svg>
+      Add at least one terminal to continue.
+    </div>
+  </div>
+
+  <!-- SCREEN 2: CONTACT DETAILS -->
+  <div class="screen" id="screen-contact">
+    <h1 class="page-title">Contact & shipping details</h1>
+    <p class="page-subtitle">Where should we send the replacement terminal?</p>
+
+    <!-- Terminal summary -->
+    <div class="form-section">
+      <div class="form-section-title">
+        <div class="form-section-icon">📦</div>
+        Terminals to return
+      </div>
+      <div id="contact-terminals-list"></div>
+    </div>
+
+    <!-- Contact info -->
+    <div class="form-section">
+      <div class="form-section-title">
+        <div class="form-section-icon">👤</div>
+        Contact information
+      </div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Company name <span class="required">*</span></label>
+          <input type="text" id="f-company" placeholder="MultiSafepay BV"/>
+        </div>
+        <div class="form-field">
+          <label>Contact person <span class="required">*</span></label>
+          <input type="text" id="f-contact" placeholder="Jan de Vries"/>
+        </div>
+        <div class="form-field span2">
+          <label>Email address <span class="required">*</span></label>
+          <input type="email" id="f-email" placeholder="jan@bedrijf.nl"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shipping address -->
+    <div class="form-section">
+      <div class="form-section-title">
+        <div class="form-section-icon">📍</div>
+        Shipping address
+      </div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Street <span class="required">*</span></label>
+          <input type="text" id="f-street" placeholder="Keizersgracht"/>
+        </div>
+        <div class="form-field">
+          <label>House number <span class="required">*</span></label>
+          <input type="text" id="f-number" placeholder="100"/>
+        </div>
+        <div class="form-field">
+          <label>Postal code <span class="required">*</span></label>
+          <input type="text" id="f-zip" placeholder="1015 CX"/>
+        </div>
+        <div class="form-field">
+          <label>City <span class="required">*</span></label>
+          <input type="text" id="f-city" placeholder="Amsterdam"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Return reason per terminal -->
+    <div class="form-section">
+      <div class="form-section-title">
+        <div class="form-section-icon">🔧</div>
+        Return reason
+      </div>
+      <div id="reason-fields"></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: SUMMARY -->
+  <div class="screen" id="screen-summary">
+    <h1 class="page-title">Review your request</h1>
+    <p class="page-subtitle">Please check all details before submitting.</p>
+
+    <div class="submit-notice">
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" style="flex-shrink:0;margin-top:1px"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm.75 10.5h-1.5v-5h1.5v5zm0-6.5h-1.5V3.5h1.5V5z"/></svg>
+      After submitting, a ticket will be created in our system. You will receive a confirmation email with your return label within 1 business day.
+    </div>
+
+    <div class="summary-section">
+      <div class="summary-header">Devices</div>
+      <div id="summary-terminals"></div>
+    </div>
+
+    <div class="summary-section">
+      <div class="summary-header">Contact & Shipping</div>
+      <div class="summary-row"><span class="summary-label">Company</span><span class="summary-value" id="s-company"></span></div>
+      <div class="summary-row"><span class="summary-label">Contact</span><span class="summary-value" id="s-contact"></span></div>
+      <div class="summary-row"><span class="summary-label">Email</span><span class="summary-value" id="s-email"></span></div>
+      <div class="summary-row"><span class="summary-label">Address</span><span class="summary-value" id="s-address"></span></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: SUCCESS -->
+  <div class="screen" id="screen-success">
+    <div class="success-wrap">
+      <div class="success-icon">✓</div>
+      <h2 class="success-title">RMA request submitted</h2>
+      <p class="success-sub">Your request has been received. A ticket has been created in our system.<br/>You will receive a confirmation email with your return label shortly.</p>
+      <div class="ticket-ref" id="ticket-ref">RMA-2026-0001</div>
+      <div>
+        <button class="btn btn-primary" onclick="resetPortal()">Submit another request</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <button class="btn btn-secondary" id="btn-back" style="display:none" onclick="goBack()">← Back</button>
+  <button class="btn btn-primary" id="btn-continue" disabled onclick="goNext()">Continue to contact details</button>
+</div>
+
+<script>
+// ── STATE ──
+const SN_MAP = {
+  'PA': 'P3 AIR',
+  'PC': 'P2 Lite SE',
+};
+
+let terminals = []; // [{sn, type}]
+let currentScreen = 'devices';
+let reasons = {};
+
+const screens = ['devices', 'contact', 'summary', 'success'];
+const stepIds = ['step1', 'step2', 'step3', 'step4'];
+
+function detectType(sn) {
+  if (!sn || sn.length < 2) return null;
+  const prefix = sn.slice(0, 2).toUpperCase();
+  return SN_MAP[prefix] || null;
+}
+
+// ── SN INPUT LOGIC ──
+const snInput = document.getElementById('sn-input');
+const detectBadge = document.getElementById('detect-badge');
+const detectText = document.getElementById('detect-text');
+const addBtn = document.getElementById('add-btn');
+
+snInput.addEventListener('input', () => {
+  const val = snInput.value.trim();
+  const type = detectType(val);
+  const alreadyAdded = terminals.some(t => t.sn.toUpperCase() === val.toUpperCase());
+
+  detectBadge.className = 'detect-badge';
+
+  if (val.length === 0) {
+    addBtn.disabled = true;
+    return;
+  }
+
+  if (alreadyAdded) {
+    detectBadge.classList.add('error');
+    detectText.textContent = 'This serial number has already been added.';
+    snInput.className = 'sn-input error';
+    addBtn.disabled = true;
+    return;
+  }
+
+  if (type) {
+    detectBadge.classList.add('success');
+    detectText.textContent = `Terminal detected: ${type}`;
+    snInput.className = 'sn-input success';
+    addBtn.disabled = false;
+  } else if (val.length >= 2) {
+    detectBadge.classList.add('error');
+    detectText.textContent = 'Unknown serial number prefix. Please check and try again.';
+    snInput.className = 'sn-input error';
+    addBtn.disabled = true;
+  } else {
+    snInput.className = 'sn-input';
+    addBtn.disabled = true;
+  }
+});
+
+snInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !addBtn.disabled) addTerminal();
+});
+
+addBtn.addEventListener('click', addTerminal);
+
+function addTerminal() {
+  const sn = snInput.value.trim().toUpperCase();
+  const type = detectType(sn);
+  if (!type) return;
+  terminals.push({ sn, type });
+  snInput.value = '';
+  snInput.className = 'sn-input';
+  detectBadge.className = 'detect-badge';
+  addBtn.disabled = true;
+  renderTerminalList();
+  updateContinueBtn();
+}
+
+function removeTerminal(sn) {
+  terminals = terminals.filter(t => t.sn !== sn);
+  renderTerminalList();
+  updateContinueBtn();
+}
+
+function renderTerminalList() {
+  const list = document.getElementById('terminals-list');
+  const banner = document.getElementById('no-terminals-banner');
+  list.innerHTML = '';
+  if (terminals.length === 0) {
+    banner.style.display = 'flex';
+    return;
+  }
+  banner.style.display = 'none';
+  terminals.forEach(t => {
+    const el = document.createElement('div');
+    el.className = 'terminal-tag';
+    el.innerHTML = `
+      <div class="terminal-tag-left">
+        <span class="terminal-tag-sn">${t.sn}</span>
+        <span class="terminal-tag-type">${t.type}</span>
+      </div>
+      <button class="terminal-remove" onclick="removeTerminal('${t.sn}')" title="Remove">✕</button>
+    `;
+    list.appendChild(el);
+  });
+}
+
+function updateContinueBtn() {
+  const btn = document.getElementById('btn-continue');
+  btn.disabled = terminals.length === 0;
+}
+
+// ── CSV UPLOAD ──
+const csvDrop = document.getElementById('csv-drop');
+const csvInput = document.getElementById('csv-input');
+
+csvDrop.addEventListener('dragover', e => { e.preventDefault(); csvDrop.classList.add('drag-over'); });
+csvDrop.addEventListener('dragleave', () => csvDrop.classList.remove('drag-over'));
+csvDrop.addEventListener('drop', e => {
+  e.preventDefault(); csvDrop.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) processCSV(file);
+});
+csvInput.addEventListener('change', () => { if (csvInput.files[0]) processCSV(csvInput.files[0]); });
+
+function processCSV(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const lines = e.target.result.split('\n').map(l => l.trim()).filter(Boolean);
+    let added = 0, errors = [];
+    lines.forEach(sn => {
+      const clean = sn.replace(/[",;]/g, '').trim().toUpperCase();
+      const type = detectType(clean);
+      if (!type) { errors.push(clean); return; }
+      if (terminals.some(t => t.sn === clean)) return;
+      terminals.push({ sn: clean, type });
+      added++;
+    });
+    renderTerminalList();
+    updateContinueBtn();
+    const resultEl = document.getElementById('csv-result');
+    resultEl.innerHTML = `
+      <div class="detect-badge success" style="display:flex">
+        <span class="detect-dot"></span>
+        ${added} terminal(s) added from CSV${errors.length ? `. ${errors.length} unknown SN(s) skipped.` : '.'}
+      </div>
+    `;
+  };
+  reader.readAsText(file);
+}
+
+// ── NAVIGATION ──
+function goNext() {
+  if (currentScreen === 'devices') {
+    showScreen('contact');
+    renderContactTerminals();
+    renderReasonFields();
+    document.getElementById('btn-continue').textContent = 'Continue to summary';
+    document.getElementById('btn-back').style.display = 'inline-flex';
+    document.getElementById('btn-continue').disabled = false;
+  } else if (currentScreen === 'contact') {
+    if (!validateContact()) return;
+    buildSummary();
+    showScreen('summary');
+    document.getElementById('btn-continue').textContent = 'Submit request';
+    document.getElementById('btn-continue').style.background = '#16a34a';
+  } else if (currentScreen === 'summary') {
+    submitRequest();
+  }
+}
+
+function goBack() {
+  if (currentScreen === 'contact') {
+    showScreen('devices');
+    document.getElementById('btn-back').style.display = 'none';
+    document.getElementById('btn-continue').textContent = 'Continue to contact details';
+    document.getElementById('btn-continue').style.background = '';
+    updateContinueBtn();
+  } else if (currentScreen === 'summary') {
+    showScreen('contact');
+    document.getElementById('btn-continue').textContent = 'Continue to summary';
+    document.getElementById('btn-continue').style.background = '';
+  }
+}
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  currentScreen = name;
+  updateStepper();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateStepper() {
+  const map = { devices: 1, contact: 2, summary: 3, success: 4 };
+  const current = map[currentScreen];
+  stepIds.forEach((id, i) => {
+    const el = document.getElementById(id);
+    el.className = 'step-item';
+    if (i + 1 < current) { el.classList.add('completed'); el.querySelector('.step-circle').textContent = '✓'; }
+    else if (i + 1 === current) el.classList.add('active');
+  });
+}
+
+// ── CONTACT SCREEN ──
+function renderContactTerminals() {
+  const el = document.getElementById('contact-terminals-list');
+  el.innerHTML = terminals.map(t => `
+    <div class="terminal-summary-item">
+      <span class="terminal-summary-sn">${t.sn}</span>
+      <span class="terminal-summary-type">${t.type}</span>
+    </div>
+  `).join('');
+}
+
+function renderReasonFields() {
+  const el = document.getElementById('reason-fields');
+  el.innerHTML = terminals.map((t, i) => `
+    <div class="form-field" style="margin-bottom:14px">
+      <label>
+        <span style="font-family:'DM Mono',monospace;color:var(--accent)">${t.sn}</span>
+        — ${t.type} <span class="required">*</span>
+      </label>
+      <select id="reason-${i}" onchange="reasons['${t.sn}']=this.value">
+        <option value="">Select a reason…</option>
+        <option value="Screen defect">Screen defect</option>
+        <option value="Does not power on">Does not power on</option>
+        <option value="Connectivity issue">Connectivity issue</option>
+        <option value="Card reader defect">Card reader defect</option>
+        <option value="Physical damage">Physical damage</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+  `).join('');
+}
+
+function validateContact() {
+  const fields = ['f-company','f-contact','f-email','f-street','f-number','f-zip','f-city'];
+  let ok = true;
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) { el.style.borderColor = 'var(--error)'; ok = false; }
+    else el.style.borderColor = '';
+  });
+  // check all reasons
+  terminals.forEach((t, i) => {
+    const sel = document.getElementById('reason-' + i);
+    if (!sel.value) { sel.style.borderColor = 'var(--error)'; ok = false; }
+    else { sel.style.borderColor = ''; reasons[t.sn] = sel.value; }
+  });
+  if (!ok) {
+    const firstError = document.querySelector('[style*="var(--error)"]');
+    if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  return ok;
+}
+
+// ── SUMMARY ──
+function buildSummary() {
+  const st = document.getElementById('summary-terminals');
+  st.innerHTML = terminals.map(t => `
+    <div class="summary-row">
+      <span class="summary-label mono">${t.sn}</span>
+      <span class="summary-value">${t.type} — ${reasons[t.sn] || '—'}</span>
+    </div>
+  `).join('');
+  document.getElementById('s-company').textContent = document.getElementById('f-company').value;
+  document.getElementById('s-contact').textContent = document.getElementById('f-contact').value;
+  document.getElementById('s-email').textContent = document.getElementById('f-email').value;
+  document.getElementById('s-address').textContent = `${document.getElementById('f-street').value} ${document.getElementById('f-number').value}, ${document.getElementById('f-zip').value} ${document.getElementById('f-city').value}`;
+}
+
+// ── SUBMIT ──
+function submitRequest() {
+  const btn = document.getElementById('btn-continue');
+  btn.classList.add('btn-loading');
+  btn.disabled = true;
+
+  const payload = {
+    company: document.getElementById('f-company').value,
+    contact: document.getElementById('f-contact').value,
+    email: document.getElementById('f-email').value,
+    address: {
+      street: document.getElementById('f-street').value,
+      number: document.getElementById('f-number').value,
+      zip: document.getElementById('f-zip').value,
+      city: document.getElementById('f-city').value,
+    },
+    terminals: terminals.map(t => ({
+      sn: t.sn,
+      type: t.type,
+      reason: reasons[t.sn]
+    }))
+  };
+
+  // Replace this URL with your Zapier webhook URL
+  const ZAPIER_WEBHOOK = 'https://hooks.zapier.com/hooks/catch/YOUR_HOOK_ID/';
+
+  fetch(ZAPIER_WEBHOOK, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .catch(() => {}) // fail silently in demo
+  .finally(() => {
+    btn.classList.remove('btn-loading');
+    const ref = 'RMA-2026-' + String(Math.floor(Math.random() * 9000) + 1000);
+    document.getElementById('ticket-ref').textContent = ref;
+    showScreen('success');
+    document.getElementById('btn-continue').style.display = 'none';
+    document.getElementById('btn-back').style.display = 'none';
+  });
+}
+
+function resetPortal() {
+  terminals = []; reasons = {};
+  renderTerminalList();
+  showScreen('devices');
+  document.getElementById('btn-continue').style.display = 'inline-flex';
+  document.getElementById('btn-continue').textContent = 'Continue to contact details';
+  document.getElementById('btn-continue').style.background = '';
+  updateContinueBtn();
+}
+</script>
+</body>
+</html>
