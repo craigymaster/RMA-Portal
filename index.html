@@ -52,20 +52,24 @@
     top: 0;
     z-index: 100;
   }
-  .nav-logo {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--primary);
+  .nav-left {
     display: flex;
     align-items: center;
     gap: 12px;
   }
-  .nav-logo img {
+  .nav-left img {
     display: block;
     width: auto;
     height: 28px;
   }
-  .nav-logo span {
+  .nav-center {
+    flex: 1;
+    text-align: center;
+  }
+  .nav-center span {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--primary);
     letter-spacing: -0.02em;
   }
   .nav-right { display: flex; align-items: center; gap: 16px; }
@@ -543,8 +547,10 @@
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">
+  <div class="nav-left">
     <img src="logo.png" alt="MultiSafepay" height="28"/>
+  </div>
+  <div class="nav-center">
     <span>MultiSafepay RMA Portal</span>
   </div>
   <div class="nav-right">
