@@ -92,15 +92,6 @@
     text-decoration: none;
     display: flex; align-items: center; gap: 5px;
   }
-  .nav-avatar {
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: white;
-    font-size: 13px;
-    font-weight: 600;
-    display: flex; align-items: center; justify-content: center;
-  }
 
   /* ── STEPPER ── */
   .stepper-wrap {
@@ -367,6 +358,39 @@
   .form-field.span2 { grid-column: span 2; }
   @media (max-width: 560px) { .form-field.span2 { grid-column: span 1; } }
 
+  .reason-option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: background .15s, border-color .15s;
+    font-size: 14px;
+    user-select: none;
+    background: white;
+  }
+  .reason-option:hover { background: #f5f9ff; }
+  .reason-option.selected { background: #E8F6FD; border-color: #0EAAF1; }
+  .reason-radio {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid #CBD5E1;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color .15s;
+  }
+  .reason-option.selected .reason-radio { border-color: #0EAAF1; }
+  .reason-radio-inner {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #0EAAF1;
+    display: none;
+  }
+  .reason-option.selected .reason-radio-inner { display: block; }
+
   label {
     font-size: 13px;
     font-weight: 500;
@@ -577,7 +601,6 @@
       <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 11a1 1 0 110-2 1 1 0 010 2zm1-3.5H7V5h2v3.5z"/></svg>
       Help
     </a>
-    <div class="nav-avatar">J</div>
   </div>
 </nav>
 
@@ -1036,6 +1059,15 @@ function renderContactTerminals() {
 }
 
 function renderReasonFields() {
+  const options = [
+    'Wrong terminal ordered',
+    'Broken - Tampering Alarm',
+    'Broken - System not working',
+    'Broken - Battery not working/no power',
+    'Broken - Display broken',
+    'Broken - Chip reader broken/not reading cards',
+    'Use Magstripe error',
+  ];
   const el = document.getElementById('reason-fields');
   el.innerHTML = terminals.map((t, i) => {
     const prevReason = reasons[t.sn] || '';
@@ -1046,35 +1078,15 @@ function renderReasonFields() {
           <span style="font-family:'Roboto Mono',monospace;color:var(--accent)">${t.sn}</span>
           — ${t.type} <span class="required">*</span>
         </label>
-        <select id="reason-${i}" onchange="reasons['${t.sn}']=this.value">
-          <option value="" ${prevReason === '' ? 'selected' : ''}>Select a reason…</option>
-          <option value="Broken - System not working" ${prevReason === 'Broken - System not working' ? 'selected' : ''}>Broken - System not working</option>
-          <option value="Broken - Display broken" ${prevReason === 'Broken - Display broken' ? 'selected' : ''}>Broken - Display broken</option>
-          <option value="Broken - Certificate error after tampering mode" ${prevReason === 'Broken - Certificate error after tampering mode' ? 'selected' : ''}>Broken - Certificate error after tampering mode</option>
-          <option value="Broken - Printer broken" ${prevReason === 'Broken - Printer broken' ? 'selected' : ''}>Broken - Printer broken</option>
-          <option value="Broken - Scanner broken" ${prevReason === 'Broken - Scanner broken' ? 'selected' : ''}>Broken - Scanner broken</option>
-          <option value="Broken - Battery not working/no power" ${prevReason === 'Broken - Battery not working/no power' ? 'selected' : ''}>Broken - Battery not working/no power</option>
-          <option value="Broken - Chip reader broken/not reading cards" ${prevReason === 'Broken - Chip reader broken/not reading cards' ? 'selected' : ''}>Broken - Chip reader broken/not reading cards</option>
-          <option value="Broken - Hardware damage" ${prevReason === 'Broken - Hardware damage' ? 'selected' : ''}>Broken - Hardware damage</option>
-          <option value="Broken - Network not working" ${prevReason === 'Broken - Network not working' ? 'selected' : ''}>Broken - Network not working</option>
-          <option value="Broken - App release broken for this model" ${prevReason === 'Broken - App release broken for this model' ? 'selected' : ''}>Broken - App release broken for this model</option>
-          <option value="Account closure" ${prevReason === 'Account closure' ? 'selected' : ''}>Account closure</option>
-          <option value="Wrong terminal ordered" ${prevReason === 'Wrong terminal ordered' ? 'selected' : ''}>Wrong terminal ordered</option>
-          <option value="Broken - Tampering Alarm" ${prevReason === 'Broken - Tampering Alarm' ? 'selected' : ''}>Broken - Tampering Alarm</option>
-          <option value="Broken - Firmware update fails" ${prevReason === 'Broken - Firmware update fails' ? 'selected' : ''}>Broken - Firmware update fails</option>
-          <option value="Use Magstripe error" ${prevReason === 'Use Magstripe error' ? 'selected' : ''}>Use Magstripe error</option>
-          <option value="RKI - no certificate" ${prevReason === 'RKI - no certificate' ? 'selected' : ''}>RKI - no certificate</option>
-          <option value="Test terminal" ${prevReason === 'Test terminal' ? 'selected' : ''}>Test terminal</option>
-          <option value="Broken: does not charge" ${prevReason === 'Broken: does not charge' ? 'selected' : ''}>Broken: does not charge</option>
-          <option value="Broken: power cable does not work" ${prevReason === 'Broken: power cable does not work' ? 'selected' : ''}>Broken: power cable does not work</option>
-          <option value="System overheating" ${prevReason === 'System overheating' ? 'selected' : ''}>System overheating</option>
-          <option value="Ask Jasper" ${prevReason === 'Ask Jasper' ? 'selected' : ''}>Ask Jasper</option>
-          <option value="DOA" ${prevReason === 'DOA' ? 'selected' : ''}>DOA</option>
-          <option value="Terminal is not received" ${prevReason === 'Terminal is not received' ? 'selected' : ''}>Terminal is not received</option>
-          <option value="Software-input not working" ${prevReason === 'Software-input not working' ? 'selected' : ''}>Software-input not working</option>
-          <option value="Activation fails" ${prevReason === 'Activation fails' ? 'selected' : ''}>Activation fails</option>
-          <option value="Camera not working" ${prevReason === 'Camera not working' ? 'selected' : ''}>Camera not working</option>
-        </select>
+        <div id="reason-group-${i}">
+          ${options.map((option, j) => `
+            <label class="reason-option ${prevReason === option ? 'selected' : ''}" for="reason-${i}-${j}">
+              <div class="reason-radio"><div class="reason-radio-inner"></div></div>
+              <input type="radio" id="reason-${i}-${j}" name="reason-${i}" value="${option}" hidden ${prevReason === option ? 'checked' : ''} onchange="selectReason('${t.sn}', '${option}')" />
+              <span>${option}</span>
+            </label>
+          `).join('')}
+        </div>
         <div class="form-field">
           <label>Description of the problem <span class="required">*</span></label>
           <textarea id="desc-${i}" placeholder="Describe the issue as specifically as possible…" oninput="descriptions['${t.sn}']=this.value">${prevDesc}</textarea>
@@ -1082,6 +1094,11 @@ function renderReasonFields() {
       </div>
     `;
   }).join('');
+}
+
+function selectReason(sn, value) {
+  reasons[sn] = value;
+  renderReasonFields();
 }
 
 function validateContact() {
@@ -1094,10 +1111,16 @@ function validateContact() {
   });
   // check all reasons and descriptions
   terminals.forEach((t, i) => {
-    const sel = document.getElementById('reason-' + i);
+    const option = document.querySelector(`input[name="reason-${i}"]:checked`);
+    const row = document.getElementById('reason-group-' + i);
     const desc = document.getElementById('desc-' + i);
-    if (!sel.value) { sel.style.borderColor = 'var(--error)'; ok = false; }
-    else { sel.style.borderColor = ''; reasons[t.sn] = sel.value; }
+    if (!option) {
+      if (row) row.querySelectorAll('.reason-option').forEach(el => el.style.borderColor = 'var(--error)');
+      ok = false;
+    } else {
+      if (row) row.querySelectorAll('.reason-option').forEach(el => el.style.borderColor = '');
+      reasons[t.sn] = option.value;
+    }
     if (!desc.value.trim()) { desc.style.borderColor = 'var(--error)'; ok = false; }
     else { desc.style.borderColor = ''; descriptions[t.sn] = desc.value; }
   });
