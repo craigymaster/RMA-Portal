@@ -992,12 +992,32 @@ function renderReasonFields() {
         </label>
         <select id="reason-${i}" onchange="reasons['${t.sn}']=this.value">
           <option value="" ${prevReason === '' ? 'selected' : ''}>Select a reason…</option>
-          <option value="Screen defect" ${prevReason === 'Screen defect' ? 'selected' : ''}>Screen defect</option>
-          <option value="Does not power on" ${prevReason === 'Does not power on' ? 'selected' : ''}>Does not power on</option>
-          <option value="Connectivity issue" ${prevReason === 'Connectivity issue' ? 'selected' : ''}>Connectivity issue</option>
-          <option value="Card reader defect" ${prevReason === 'Card reader defect' ? 'selected' : ''}>Card reader defect</option>
-          <option value="Physical damage" ${prevReason === 'Physical damage' ? 'selected' : ''}>Physical damage</option>
-          <option value="Other" ${prevReason === 'Other' ? 'selected' : ''}>Other</option>
+          <option value="Broken - System not working" ${prevReason === 'Broken - System not working' ? 'selected' : ''}>Broken - System not working</option>
+          <option value="Broken - Display broken" ${prevReason === 'Broken - Display broken' ? 'selected' : ''}>Broken - Display broken</option>
+          <option value="Broken - Certificate error after tampering mode" ${prevReason === 'Broken - Certificate error after tampering mode' ? 'selected' : ''}>Broken - Certificate error after tampering mode</option>
+          <option value="Broken - Printer broken" ${prevReason === 'Broken - Printer broken' ? 'selected' : ''}>Broken - Printer broken</option>
+          <option value="Broken - Scanner broken" ${prevReason === 'Broken - Scanner broken' ? 'selected' : ''}>Broken - Scanner broken</option>
+          <option value="Broken - Battery not working/no power" ${prevReason === 'Broken - Battery not working/no power' ? 'selected' : ''}>Broken - Battery not working/no power</option>
+          <option value="Broken - Chip reader broken/not reading cards" ${prevReason === 'Broken - Chip reader broken/not reading cards' ? 'selected' : ''}>Broken - Chip reader broken/not reading cards</option>
+          <option value="Broken - Hardware damage" ${prevReason === 'Broken - Hardware damage' ? 'selected' : ''}>Broken - Hardware damage</option>
+          <option value="Broken - Network not working" ${prevReason === 'Broken - Network not working' ? 'selected' : ''}>Broken - Network not working</option>
+          <option value="Broken - App release broken for this model" ${prevReason === 'Broken - App release broken for this model' ? 'selected' : ''}>Broken - App release broken for this model</option>
+          <option value="Account closure" ${prevReason === 'Account closure' ? 'selected' : ''}>Account closure</option>
+          <option value="Wrong terminal ordered" ${prevReason === 'Wrong terminal ordered' ? 'selected' : ''}>Wrong terminal ordered</option>
+          <option value="Broken - Tampering Alarm" ${prevReason === 'Broken - Tampering Alarm' ? 'selected' : ''}>Broken - Tampering Alarm</option>
+          <option value="Broken - Firmware update fails" ${prevReason === 'Broken - Firmware update fails' ? 'selected' : ''}>Broken - Firmware update fails</option>
+          <option value="Use Magstripe error" ${prevReason === 'Use Magstripe error' ? 'selected' : ''}>Use Magstripe error</option>
+          <option value="RKI - no certificate" ${prevReason === 'RKI - no certificate' ? 'selected' : ''}>RKI - no certificate</option>
+          <option value="Test terminal" ${prevReason === 'Test terminal' ? 'selected' : ''}>Test terminal</option>
+          <option value="Broken: does not charge" ${prevReason === 'Broken: does not charge' ? 'selected' : ''}>Broken: does not charge</option>
+          <option value="Broken: power cable does not work" ${prevReason === 'Broken: power cable does not work' ? 'selected' : ''}>Broken: power cable does not work</option>
+          <option value="System overheating" ${prevReason === 'System overheating' ? 'selected' : ''}>System overheating</option>
+          <option value="Ask Jasper" ${prevReason === 'Ask Jasper' ? 'selected' : ''}>Ask Jasper</option>
+          <option value="DOA" ${prevReason === 'DOA' ? 'selected' : ''}>DOA</option>
+          <option value="Terminal is not received" ${prevReason === 'Terminal is not received' ? 'selected' : ''}>Terminal is not received</option>
+          <option value="Software-input not working" ${prevReason === 'Software-input not working' ? 'selected' : ''}>Software-input not working</option>
+          <option value="Activation fails" ${prevReason === 'Activation fails' ? 'selected' : ''}>Activation fails</option>
+          <option value="Camera not working" ${prevReason === 'Camera not working' ? 'selected' : ''}>Camera not working</option>
         </select>
         <div class="form-field">
           <label>Description of the problem <span class="required">*</span></label>
