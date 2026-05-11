@@ -689,6 +689,58 @@
   }
   .modal-body { margin-bottom: 24px; display: flex; flex-direction: column; gap: 16px; }
   .modal-footer .btn { width: 100%; justify-content: center; padding: 12px; font-size: 15px; }
+  .modal-reason-group {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .modal-reason-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    transition: background .15s, transform .15s, box-shadow .15s;
+    user-select: none;
+    position: relative;
+  }
+  .modal-reason-option:last-child { border-bottom: none; }
+  .modal-reason-option:hover { background: #f5f9ff; transform: translateX(3px); }
+  .modal-reason-option.selected {
+    background: #E8F6FD;
+    transform: translateX(4px);
+    box-shadow: -3px 0 0 0 var(--accent);
+    font-weight: 500;
+  }
+  @keyframes popIn {
+    0%   { transform: translateX(4px) scale(1); }
+    40%  { transform: translateX(4px) scale(1.015); }
+    100% { transform: translateX(4px) scale(1); }
+  }
+  .modal-reason-option.selected { animation: popIn .2s ease; }
+  .modal-reason-radio {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 2px solid #CBD5E1;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color .15s, transform .15s;
+  }
+  .modal-reason-option.selected .modal-reason-radio {
+    border-color: var(--accent);
+    transform: scale(1.1);
+  }
+  .modal-reason-radio-inner {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    transform: scale(0);
+    transition: transform .15s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .modal-reason-option.selected .modal-reason-radio-inner { transform: scale(1); }
   @media (max-width: 480px) {
     .modal-box { padding: 24px 20px; border-radius: 12px; }
     .modal-terminal-type { font-size: 17px; }
@@ -903,16 +955,7 @@
     <div class="modal-body">
       <div class="form-field">
         <label>What seems to be the problem? <span class="required">*</span></label>
-        <select id="modal-reason-select" onchange="updateModalBtn()">
-          <option value="">Select a reason…</option>
-          <option>Wrong terminal ordered</option>
-          <option>Broken - Tampering Alarm</option>
-          <option>Broken - System not working</option>
-          <option>Broken - Battery not working/no power</option>
-          <option>Broken - Display broken</option>
-          <option>Broken - Chip reader broken/not reading cards</option>
-          <option>Use Magstripe error</option>
-        </select>
+        <div class="modal-reason-group" id="modal-reason-group"></div>
       </div>
       <div class="form-field">
         <label>Problem description <span class="required">*</span></label>
@@ -1097,12 +1140,38 @@ function openReasonModal(index) {
     prog.style.display = 'none';
   }
 
-  document.getElementById('modal-reason-select').value = reasons[t.sn] || '';
+  const reasonOptions = [
+    'Wrong terminal ordered',
+    'Broken - Tampering Alarm',
+    'Broken - System not working',
+    'Broken - Battery not working/no power',
+    'Broken - Display broken',
+    'Broken - Chip reader broken/not reading cards',
+    'Use Magstripe error',
+  ];
+  const group = document.getElementById('modal-reason-group');
+  const selected = reasons[t.sn] || '';
+  group.innerHTML = reasonOptions.map(opt => `
+    <div class="modal-reason-option${selected === opt ? ' selected' : ''}" data-reason="${opt}">
+      <div class="modal-reason-radio"><div class="modal-reason-radio-inner"></div></div>
+      <span>${opt}</span>
+    </div>
+  `).join('');
+
   document.getElementById('modal-desc').value = descriptions[t.sn] || '';
   updateModalBtn();
 
   document.getElementById('modal-overlay').classList.add('active');
   document.body.style.overflow = 'hidden';
+}
+
+function selectModalReason(value) {
+  reasons[terminals[currentModalIndex].sn] = value;
+  document.querySelectorAll('.modal-reason-option').forEach(el => {
+    const isSelected = el.querySelector('span').textContent === value;
+    el.classList.toggle('selected', isSelected);
+  });
+  updateModalBtn();
 }
 
 function closeReasonModal() {
@@ -1111,14 +1180,13 @@ function closeReasonModal() {
 }
 
 function updateModalBtn() {
-  const reason = document.getElementById('modal-reason-select').value;
+  const reason = reasons[terminals[currentModalIndex]?.sn];
   const desc = document.getElementById('modal-desc').value.trim();
   document.getElementById('modal-continue-btn').disabled = !reason || !desc;
 }
 
 function submitModalReason() {
   const t = terminals[currentModalIndex];
-  reasons[t.sn] = document.getElementById('modal-reason-select').value;
   descriptions[t.sn] = document.getElementById('modal-desc').value;
 
   if (currentModalIndex < terminals.length - 1) {
@@ -1132,6 +1200,13 @@ function submitModalReason() {
 // click outside modal to close
 document.getElementById('modal-overlay').addEventListener('click', function(e) {
   if (e.target === this) closeReasonModal();
+});
+
+// reason option clicks via delegation
+document.getElementById('modal-reason-group').addEventListener('click', function(e) {
+  const option = e.target.closest('.modal-reason-option');
+  if (!option) return;
+  selectModalReason(option.dataset.reason);
 });
 
 // ── NAVIGATION ──
@@ -1257,8 +1332,7 @@ function submitRequest() {
     }))
   };
 
-  // Replace this URL with your Zapier webhook URL
-  const ZAPIER_WEBHOOK = 'https://hooks.zapier.com/hooks/catch/YOUR_HOOK_ID/';
+  const ZAPIER_WEBHOOK = 'https://multisafepay.jitbit.com/helpdesk/api/ticket';
 
   fetch(ZAPIER_WEBHOOK, {
     method: 'POST',
