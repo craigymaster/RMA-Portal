@@ -605,6 +605,24 @@
   .divider::before { content: ''; position: absolute; left: 0; top: 50%; width: 45%; height: 1px; background: var(--border); }
   .divider::after { content: ''; position: absolute; right: 0; top: 50%; width: 45%; height: 1px; background: var(--border); }
 
+  .field-error {
+    font-size: 12px;
+    color: var(--error);
+    margin-top: 4px;
+    display: none;
+    align-items: center;
+    gap: 4px;
+  }
+  .field-error.visible { display: flex; }
+  input.invalid, select.invalid, textarea.invalid {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px var(--error-light);
+  }
+  input.valid {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px #dcfce7;
+  }
+
   .info-banner {
     display: flex; align-items: center; gap: 10px;
     padding: 10px 14px;
@@ -868,14 +886,17 @@
         <div class="form-field">
           <label>Company name <span class="required">*</span></label>
           <input type="text" id="f-company" placeholder="MultiSafepay BV"/>
+          <span class="field-error" id="err-company"></span>
         </div>
         <div class="form-field">
           <label>Contact person <span class="required">*</span></label>
           <input type="text" id="f-contact" placeholder="Jan de Vries"/>
+          <span class="field-error" id="err-contact"></span>
         </div>
         <div class="form-field span2">
           <label>Email address <span class="required">*</span></label>
           <input type="email" id="f-email" placeholder="jan@bedrijf.nl"/>
+          <span class="field-error" id="err-email"></span>
         </div>
       </div>
     </div>
@@ -887,21 +908,53 @@
         Shipping address
       </div>
       <div class="form-grid">
+        <div class="form-field span2">
+          <label>Country <span class="required">*</span></label>
+          <select id="f-country" onchange="onCountryChange()">
+            <option value="">Select a country…</option>
+            <option value="NL" selected>Netherlands</option>
+            <option value="BE">Belgium</option>
+            <option value="DE">Germany</option>
+            <option value="FR">France</option>
+            <option value="GB">United Kingdom</option>
+            <option value="ES">Spain</option>
+            <option value="IT">Italy</option>
+            <option value="AT">Austria</option>
+            <option value="CH">Switzerland</option>
+            <option value="DK">Denmark</option>
+            <option value="SE">Sweden</option>
+            <option value="NO">Norway</option>
+            <option value="FI">Finland</option>
+            <option value="PL">Poland</option>
+            <option value="PT">Portugal</option>
+            <option value="LU">Luxembourg</option>
+            <option value="IE">Ireland</option>
+            <option value="CZ">Czech Republic</option>
+            <option value="HU">Hungary</option>
+            <option value="RO">Romania</option>
+            <option value="OTHER">Other</option>
+          </select>
+          <span class="field-error" id="err-country"></span>
+        </div>
         <div class="form-field">
           <label>Street <span class="required">*</span></label>
           <input type="text" id="f-street" placeholder="Keizersgracht"/>
+          <span class="field-error" id="err-street"></span>
         </div>
         <div class="form-field">
           <label>House number <span class="required">*</span></label>
           <input type="text" id="f-number" placeholder="100"/>
+          <span class="field-error" id="err-number"></span>
         </div>
         <div class="form-field">
           <label>Postal code <span class="required">*</span></label>
           <input type="text" id="f-zip" placeholder="1015 CX"/>
+          <span class="field-error" id="err-zip"></span>
         </div>
         <div class="form-field">
           <label>City <span class="required">*</span></label>
           <input type="text" id="f-city" placeholder="Amsterdam"/>
+          <span class="field-error" id="err-city"></span>
         </div>
       </div>
     </div>
@@ -1308,20 +1361,146 @@ function renderContactTerminals() {
 }
 
 
+const POSTAL_FORMATS = {
+  NL: { regex: /^\d{4}\s?[a-zA-Z]{2}$/, hint: 'e.g. 1015 CX' },
+  BE: { regex: /^\d{4}$/,               hint: 'e.g. 1000' },
+  DE: { regex: /^\d{5}$/,               hint: 'e.g. 10115' },
+  FR: { regex: /^\d{5}$/,               hint: 'e.g. 75001' },
+  GB: { regex: /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i, hint: 'e.g. SW1A 1AA' },
+  ES: { regex: /^\d{5}$/,               hint: 'e.g. 28001' },
+  IT: { regex: /^\d{5}$/,               hint: 'e.g. 00100' },
+  AT: { regex: /^\d{4}$/,               hint: 'e.g. 1010' },
+  CH: { regex: /^\d{4}$/,               hint: 'e.g. 8001' },
+  DK: { regex: /^\d{4}$/,               hint: 'e.g. 1050' },
+  SE: { regex: /^\d{3}\s?\d{2}$/,       hint: 'e.g. 111 22' },
+  NO: { regex: /^\d{4}$/,               hint: 'e.g. 0150' },
+  FI: { regex: /^\d{5}$/,               hint: 'e.g. 00100' },
+  PL: { regex: /^\d{2}-?\d{3}$/,        hint: 'e.g. 00-001' },
+  PT: { regex: /^\d{4}-?\d{3}$/,        hint: 'e.g. 1000-001' },
+  LU: { regex: /^\d{4}$/,               hint: 'e.g. 1111' },
+  IE: { regex: /^[A-Z]\d{2}\s?[A-Z\d]{4}$/i, hint: 'e.g. D02 XY12' },
+  CZ: { regex: /^\d{3}\s?\d{2}$/,       hint: 'e.g. 110 00' },
+  HU: { regex: /^\d{4}$/,               hint: 'e.g. 1011' },
+  RO: { regex: /^\d{6}$/,               hint: 'e.g. 010011' },
+};
+
+function getZipRule() {
+  const country = document.getElementById('f-country')?.value || 'NL';
+  const fmt = POSTAL_FORMATS[country];
+  if (!fmt) return { validate: v => v.trim().length >= 2, msg: 'Postal code is required.' };
+  return {
+    validate: v => fmt.regex.test(v.trim()),
+    msg: `Enter a valid postal code (${fmt.hint}).`
+  };
+}
+
+function onCountryChange() {
+  const zip = document.getElementById('f-zip');
+  const country = document.getElementById('f-country').value;
+  const fmt = POSTAL_FORMATS[country];
+  zip.placeholder = fmt ? fmt.hint.replace('e.g. ', '') : '';
+  clearFieldError(FIELD_RULES.find(r => r.id === 'f-zip'));
+  zip.classList.remove('valid', 'invalid');
+}
+
+const FIELD_RULES = [
+  {
+    id: 'f-company', err: 'err-company',
+    validate: v => v.length >= 2,
+    messages: { empty: 'Company name is required.', invalid: 'Enter at least 2 characters.' }
+  },
+  {
+    id: 'f-contact', err: 'err-contact',
+    validate: v => v.length >= 2,
+    messages: { empty: 'Contact person is required.', invalid: 'Enter at least 2 characters.' }
+  },
+  {
+    id: 'f-email', err: 'err-email',
+    validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v),
+    messages: { empty: 'Email address is required.', invalid: 'Enter a valid email address (e.g. jan@bedrijf.nl).' }
+  },
+  {
+    id: 'f-country', err: 'err-country',
+    validate: v => v !== '',
+    messages: { empty: 'Please select a country.', invalid: 'Please select a country.' }
+  },
+  {
+    id: 'f-street', err: 'err-street',
+    validate: v => v.length >= 2,
+    messages: { empty: 'Street is required.', invalid: 'Enter at least 2 characters.' }
+  },
+  {
+    id: 'f-number', err: 'err-number',
+    validate: v => /^\d+[a-zA-Z\-]*$/.test(v.replace(/\s/g, '')),
+    messages: { empty: 'House number is required.', invalid: 'Enter a valid house number (e.g. 100 or 12A).' }
+  },
+  {
+    id: 'f-zip', err: 'err-zip',
+    validate: v => getZipRule().validate(v),
+    messages: { empty: 'Postal code is required.', invalid: () => getZipRule().msg }
+  },
+  {
+    id: 'f-city', err: 'err-city',
+    validate: v => v.length >= 2,
+    messages: { empty: 'City is required.', invalid: 'Enter at least 2 characters.' }
+  },
+];
+
+function setFieldError(rule, message) {
+  const input = document.getElementById(rule.id);
+  const errEl = document.getElementById(rule.err);
+  input.classList.add('invalid');
+  input.classList.remove('valid');
+  errEl.textContent = typeof message === 'function' ? message() : message;
+  errEl.classList.add('visible');
+}
+
+function clearFieldError(rule) {
+  const input = document.getElementById(rule.id);
+  const errEl = document.getElementById(rule.err);
+  input.classList.remove('invalid');
+  errEl.classList.remove('visible');
+}
+
+function setFieldValid(rule) {
+  const input = document.getElementById(rule.id);
+  input.classList.remove('invalid');
+  input.classList.add('valid');
+  document.getElementById(rule.err).classList.remove('visible');
+}
+
 function validateContact() {
-  const fields = ['f-company','f-contact','f-email','f-street','f-number','f-zip','f-city'];
   let ok = true;
-  fields.forEach(id => {
-    const el = document.getElementById(id);
-    if (!el.value.trim()) { el.style.borderColor = 'var(--error)'; ok = false; }
-    else el.style.borderColor = '';
+  let firstErrorEl = null;
+
+  FIELD_RULES.forEach(rule => {
+    const val = document.getElementById(rule.id).value.trim();
+    if (!val) {
+      setFieldError(rule, rule.messages.empty);
+      if (!firstErrorEl) firstErrorEl = document.getElementById(rule.id);
+      ok = false;
+    } else if (!rule.validate(val)) {
+      setFieldError(rule, rule.messages.invalid);
+      if (!firstErrorEl) firstErrorEl = document.getElementById(rule.id);
+      ok = false;
+    } else {
+      setFieldValid(rule);
+    }
   });
-  if (!ok) {
-    const firstError = document.querySelector('[style*="var(--error)"]');
-    if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
+
+  if (firstErrorEl) firstErrorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
   return ok;
 }
+
+// live validation on input
+FIELD_RULES.forEach(rule => {
+  document.getElementById(rule.id).addEventListener('input', () => {
+    const val = document.getElementById(rule.id).value.trim();
+    if (!val) { clearFieldError(rule); return; }
+    if (!rule.validate(val)) setFieldError(rule, rule.messages.invalid);
+    else setFieldValid(rule);
+  });
+});
 
 // ── SUMMARY ──
 function buildSummary() {
@@ -1335,7 +1514,9 @@ function buildSummary() {
   document.getElementById('s-company').textContent = document.getElementById('f-company').value;
   document.getElementById('s-contact').textContent = document.getElementById('f-contact').value;
   document.getElementById('s-email').textContent = document.getElementById('f-email').value;
-  document.getElementById('s-address').textContent = `${document.getElementById('f-street').value} ${document.getElementById('f-number').value}, ${document.getElementById('f-zip').value} ${document.getElementById('f-city').value}`;
+  const countryEl = document.getElementById('f-country');
+  const countryName = countryEl.options[countryEl.selectedIndex].text;
+  document.getElementById('s-address').textContent = `${document.getElementById('f-street').value} ${document.getElementById('f-number').value}, ${document.getElementById('f-zip').value} ${document.getElementById('f-city').value}, ${countryName}`;
 }
 
 // ── SUBMIT ──
@@ -1353,6 +1534,7 @@ function submitRequest() {
       number: document.getElementById('f-number').value,
       zip: document.getElementById('f-zip').value,
       city: document.getElementById('f-city').value,
+      country: document.getElementById('f-country').value,
     },
     terminals: terminals.map(t => ({
       sn: t.sn,
