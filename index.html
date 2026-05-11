@@ -64,6 +64,12 @@
     top: 0;
     z-index: 100;
   }
+  @media (max-width: 480px) {
+    nav {
+      padding: 0 16px;
+      height: 48px;
+    }
+  }
   .nav-left {
     display: flex;
     align-items: center;
@@ -85,6 +91,7 @@
     color: var(--primary);
     letter-spacing: -0.02em;
   }
+  @media (max-width: 480px) { .nav-center span { font-size: 13px; } }
   .nav-right { display: flex; align-items: center; gap: 16px; }
   .nav-help {
     font-size: 13px;
@@ -99,6 +106,9 @@
     border-bottom: 1px solid var(--border);
     padding: 20px 0;
   }
+  @media (max-width: 480px) {
+    .stepper-wrap { padding: 12px 0; }
+  }
   .stepper {
     max-width: 680px;
     margin: 0 auto;
@@ -106,6 +116,10 @@
     align-items: center;
     padding: 0 32px;
     gap: 10px;
+    overflow-x: auto;
+  }
+  @media (max-width: 480px) {
+    .stepper { padding: 0 16px; gap: 6px; }
   }
   .step-item {
     display: inline-flex;
@@ -117,6 +131,9 @@
     color: var(--text-secondary);
     flex: none;
     transition: all .3s;
+  }
+  @media (max-width: 480px) {
+    .step-item { padding: 8px 12px; font-size: 12px; gap: 6px; }
   }
   .step-item.completed,
   .step-item.active {
@@ -147,6 +164,7 @@
 
   /* ── MAIN LAYOUT ── */
   .main { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+  @media (max-width: 480px) { .main { padding: 24px 16px 100px; } }
 
   .page-title {
     font-size: 28px;
@@ -156,12 +174,14 @@
     margin-bottom: 8px;
     letter-spacing: -0.3px;
   }
+  @media (max-width: 480px) { .page-title { font-size: 22px; } }
   .page-subtitle {
     font-size: 15px;
     color: var(--text-secondary);
     text-align: center;
     margin-bottom: 36px;
   }
+  @media (max-width: 480px) { .page-subtitle { font-size: 13px; margin-bottom: 24px; } }
 
   /* ── SCREEN ── */
   .screen { display: none; animation: fadeIn .25s ease; }
@@ -171,11 +191,10 @@
   /* ── CARD GRID ── */
   .card-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 20px;
     margin-bottom: 32px;
   }
-  @media (max-width: 600px) { .card-grid { grid-template-columns: 1fr; } }
 
   .card {
     background: var(--surface);
@@ -185,6 +204,7 @@
     padding: 28px;
     transition: border-color .2s, box-shadow .2s, transform .2s;
   }
+  @media (max-width: 480px) { .card { padding: 20px; } }
   .card:hover { border-color: rgba(14,170,241,0.35); box-shadow: var(--shadow); transform: translateY(-1px); }
   .card-title {
     font-size: 16px;
@@ -300,30 +320,6 @@
   .add-btn:hover { background: var(--accent-light); border-color: var(--accent); }
   .add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  /* ── CSV UPLOAD ── */
-  .csv-drop {
-    border: 2px dashed var(--border);
-    border-radius: 8px;
-    padding: 32px 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color .2s, background .2s;
-    position: relative;
-  }
-  .csv-drop:hover, .csv-drop.drag-over {
-    border-color: var(--accent);
-    background: var(--accent-light);
-  }
-  .csv-drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-  .csv-icon { font-size: 28px; margin-bottom: 8px; }
-  .csv-drop p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
-  .csv-drop strong { color: var(--accent); }
-  .csv-info-link {
-    display: inline-flex; align-items: center; gap: 4px;
-    font-size: 13px; color: var(--accent); font-weight: 500;
-    text-decoration: none; margin-top: 16px;
-  }
-  .csv-info-link:hover { text-decoration: underline; }
 
   /* ── SCREEN 2: FORM ── */
   .form-section {
@@ -333,6 +329,7 @@
     padding: 28px;
     margin-bottom: 20px;
   }
+  @media (max-width: 480px) { .form-section { padding: 20px; margin-bottom: 16px; } }
   .form-section-title {
     font-size: 15px;
     font-weight: 700;
@@ -342,6 +339,7 @@
     border-bottom: 1px solid var(--border);
     display: flex; align-items: center; gap: 8px;
   }
+  @media (max-width: 480px) { .form-section-title { font-size: 14px; margin-bottom: 14px; } }
   .form-section-icon {
     width: 22px; height: 22px;
     background: var(--accent-light);
@@ -352,7 +350,8 @@
 
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .form-grid.single { grid-template-columns: 1fr; }
-  @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; gap: 14px; } }
+  @media (max-width: 480px) { .form-grid { gap: 12px; } }
 
   .form-field { display: flex; flex-direction: column; gap: 6px; }
   .form-field.span2 { grid-column: span 2; }
@@ -371,6 +370,13 @@
     font-size: 14px;
     user-select: none;
     background: white;
+  }
+  @media (max-width: 480px) {
+    .reason-option {
+      padding: 14px 12px;
+      font-size: 13px;
+      gap: 12px;
+    }
   }
   .reason-option:hover { background: #f5f9ff; }
   .reason-option.selected { background: #E8F6FD; border-color: #0EAAF1; }
@@ -396,6 +402,7 @@
     font-weight: 500;
     color: var(--text-primary);
   }
+  @media (max-width: 480px) { label { font-size: 12px; } }
   label .required { color: var(--error); margin-left: 2px; }
 
   input[type=text], input[type=email], select, textarea {
@@ -409,6 +416,12 @@
     outline: none;
     transition: border-color .2s, box-shadow .2s;
     width: 100%;
+  }
+  @media (max-width: 480px) {
+    input[type=text], input[type=email], select, textarea {
+      padding: 12px 14px;
+      font-size: 16px;
+    }
   }
   input[type=text]:focus, input[type=email]:focus, select:focus, textarea:focus {
     border-color: var(--accent);
@@ -455,13 +468,14 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
+  @media (max-width: 480px) { .summary-header { padding: 12px 16px; font-size: 12px; } }
   .summary-row {
     display: flex;
     padding: 12px 20px;
     border-bottom: 1px solid var(--border);
     font-size: 14px;
   }
-  .summary-row:last-child { border-bottom: none; }
+  @media (max-width: 480px) { .summary-row { padding: 12px 16px; font-size: 13px; } }
   .summary-label { width: 180px; flex-shrink: 0; color: var(--text-secondary); font-size: 13px; }
   .summary-value { color: var(--text-primary); font-weight: 500; }
   .summary-value.mono { font-family: 'Roboto Mono', monospace; }
@@ -477,6 +491,7 @@
     display: flex; align-items: flex-start; gap: 10px;
     line-height: 1.5;
   }
+  @media (max-width: 480px) { .submit-notice { padding: 12px 14px; font-size: 12px; gap: 8px; } }
 
   /* ── SCREEN 4: SUCCESS ── */
   .success-wrap {
@@ -491,8 +506,11 @@
     margin: 0 auto 24px;
     font-size: 28px;
   }
+  @media (max-width: 480px) { .success-icon { width: 56px; height: 56px; font-size: 24px; } }
   .success-title { font-size: 22px; font-weight: 700; font-family: 'CocoSharp', sans-serif; margin-bottom: 8px; }
+  @media (max-width: 480px) { .success-title { font-size: 18px; } }
   .success-sub { font-size: 15px; color: var(--text-secondary); margin-bottom: 28px; line-height: 1.5; }
+  @media (max-width: 480px) { .success-sub { font-size: 13px; margin-bottom: 20px; } }
   .ticket-ref {
     display: inline-block;
     font-family: 'Roboto Mono', monospace;
@@ -520,6 +538,12 @@
     gap: 12px;
     z-index: 50;
   }
+  @media (max-width: 480px) {
+    .bottom-bar {
+      padding: 12px 16px;
+      gap: 8px;
+    }
+  }
   .bottom-bar .btn-secondary {
     background: rgba(255,255,255,0.08);
     color: white;
@@ -537,6 +561,13 @@
     border: none;
     transition: all .15s;
     display: inline-flex; align-items: center; gap: 6px;
+  }
+  @media (max-width: 480px) {
+    .btn {
+      padding: 12px 18px;
+      font-size: 13px;
+      border-radius: 6px;
+    }
   }
   .btn-primary {
     background: var(--accent);
@@ -583,6 +614,84 @@
     font-size: 13px;
     color: #1e3a8a;
     margin-top: 10px;
+  }
+
+  /* ── REASON MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.48);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-box {
+    background: white;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 520px;
+    padding: 32px;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.22);
+    animation: modalIn .22s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.97) translateY(10px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: none; border: none;
+    font-size: 18px; cursor: pointer;
+    color: var(--text-muted);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .15s;
+  }
+  .modal-close:hover { background: var(--bg); color: var(--text-primary); }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .modal-terminal-icon {
+    width: 56px; height: 56px;
+    background: var(--bg);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+  .modal-terminal-type {
+    font-family: 'CocoSharp', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .modal-terminal-sn {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .modal-progress {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 8px 0;
+    border-top: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .modal-body { margin-bottom: 24px; display: flex; flex-direction: column; gap: 16px; }
+  .modal-footer .btn { width: 100%; justify-content: center; padding: 12px; font-size: 15px; }
+  @media (max-width: 480px) {
+    .modal-box { padding: 24px 20px; border-radius: 12px; }
+    .modal-terminal-type { font-size: 17px; }
   }
 </style>
 </head>
@@ -665,24 +774,6 @@
         </button>
       </div>
 
-      <!-- CSV Upload -->
-      <div class="card">
-        <div class="card-title">Upload CSV file</div>
-        <div class="card-desc">Have multiple terminals? Upload a CSV file with one serial number per row.</div>
-
-        <div class="csv-drop" id="csv-drop">
-          <input type="file" accept=".csv" id="csv-input"/>
-          <div class="csv-icon">📎</div>
-          <p><strong>Click to upload</strong> or drag and drop<br/>CSV file, one SN per row</p>
-        </div>
-
-        <a href="#" class="csv-info-link">
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 11a1 1 0 110-2 1 1 0 010 2zm1-3.5H7V5h2v3.5z"/></svg>
-          View CSV file description
-        </a>
-
-        <div id="csv-result" style="margin-top:12px;"></div>
-      </div>
     </div>
 
     <div class="info-banner" id="no-terminals-banner">
@@ -753,14 +844,6 @@
       </div>
     </div>
 
-    <!-- Return reason per terminal -->
-    <div class="form-section">
-      <div class="form-section-title">
-        <div class="form-section-icon">🔧</div>
-        Return reason
-      </div>
-      <div id="reason-fields"></div>
-    </div>
   </div>
 
   <!-- SCREEN 3: SUMMARY -->
@@ -802,6 +885,47 @@
 
 </div>
 
+<!-- REASON MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box" id="modal-box">
+    <button class="modal-close" onclick="closeReasonModal()">✕</button>
+
+    <div class="modal-header">
+      <div class="modal-terminal-icon">📟</div>
+      <div>
+        <div class="modal-terminal-type" id="modal-terminal-type"></div>
+        <div class="modal-terminal-sn" id="modal-terminal-sn"></div>
+      </div>
+    </div>
+
+    <div class="modal-progress" id="modal-progress"></div>
+
+    <div class="modal-body">
+      <div class="form-field">
+        <label>What seems to be the problem? <span class="required">*</span></label>
+        <select id="modal-reason-select" onchange="updateModalBtn()">
+          <option value="">Select a reason…</option>
+          <option>Wrong terminal ordered</option>
+          <option>Broken - Tampering Alarm</option>
+          <option>Broken - System not working</option>
+          <option>Broken - Battery not working/no power</option>
+          <option>Broken - Display broken</option>
+          <option>Broken - Chip reader broken/not reading cards</option>
+          <option>Use Magstripe error</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Problem description <span class="required">*</span></label>
+        <textarea id="modal-desc" placeholder="Describe the issue as specifically as possible…" oninput="updateModalBtn()"></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="modal-continue-btn" onclick="submitModalReason()" disabled>Continue</button>
+    </div>
+  </div>
+</div>
+
 <!-- BOTTOM BAR -->
 <div class="bottom-bar">
   <button class="btn btn-secondary" id="btn-back" style="display:none" onclick="goBack()">← Back</button>
@@ -826,6 +950,7 @@ let terminals = []; // [{sn, type}]
 let currentScreen = 'devices';
 let reasons = {};
 let descriptions = {};
+let currentModalIndex = 0;
 
 const screens = ['devices', 'contact', 'summary', 'success'];
 const stepIds = ['step1', 'step2', 'step3', 'step4'];
@@ -955,54 +1080,69 @@ function updateContinueBtn() {
   btn.disabled = terminals.length === 0;
 }
 
-// ── CSV UPLOAD ──
-const csvDrop = document.getElementById('csv-drop');
-const csvInput = document.getElementById('csv-input');
 
-csvDrop.addEventListener('dragover', e => { e.preventDefault(); csvDrop.classList.add('drag-over'); });
-csvDrop.addEventListener('dragleave', () => csvDrop.classList.remove('drag-over'));
-csvDrop.addEventListener('drop', e => {
-  e.preventDefault(); csvDrop.classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (file) processCSV(file);
-});
-csvInput.addEventListener('change', () => { if (csvInput.files[0]) processCSV(csvInput.files[0]); });
+// ── REASON MODAL ──
+function openReasonModal(index) {
+  currentModalIndex = index;
+  const t = terminals[index];
 
-function processCSV(file) {
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const lines = e.target.result.split('\n').map(l => l.trim()).filter(Boolean);
-    let added = 0, errors = [];
-    lines.forEach(sn => {
-      const clean = sn.replace(/[",;]/g, '').trim().toUpperCase();
-      const type = detectType(clean);
-      if (!type) { errors.push(clean); return; }
-      if (terminals.some(t => t.sn === clean)) return;
-      terminals.push({ sn: clean, type });
-      added++;
-    });
-    renderTerminalList();
-    updateContinueBtn();
-    const resultEl = document.getElementById('csv-result');
-    resultEl.innerHTML = `
-      <div class="detect-badge success" style="display:flex">
-        <span class="detect-dot"></span>
-        ${added} terminal(s) added from CSV${errors.length ? `. ${errors.length} unknown SN(s) skipped.` : '.'}
-      </div>
-    `;
-  };
-  reader.readAsText(file);
+  document.getElementById('modal-terminal-type').textContent = t.type;
+  document.getElementById('modal-terminal-sn').textContent = 'Serial number: ' + t.sn;
+
+  const prog = document.getElementById('modal-progress');
+  if (terminals.length > 1) {
+    prog.textContent = 'Terminal ' + (index + 1) + ' of ' + terminals.length;
+    prog.style.display = 'block';
+  } else {
+    prog.style.display = 'none';
+  }
+
+  document.getElementById('modal-reason-select').value = reasons[t.sn] || '';
+  document.getElementById('modal-desc').value = descriptions[t.sn] || '';
+  updateModalBtn();
+
+  document.getElementById('modal-overlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
 }
+
+function closeReasonModal() {
+  document.getElementById('modal-overlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function updateModalBtn() {
+  const reason = document.getElementById('modal-reason-select').value;
+  const desc = document.getElementById('modal-desc').value.trim();
+  document.getElementById('modal-continue-btn').disabled = !reason || !desc;
+}
+
+function submitModalReason() {
+  const t = terminals[currentModalIndex];
+  reasons[t.sn] = document.getElementById('modal-reason-select').value;
+  descriptions[t.sn] = document.getElementById('modal-desc').value;
+
+  if (currentModalIndex < terminals.length - 1) {
+    openReasonModal(currentModalIndex + 1);
+  } else {
+    closeReasonModal();
+    renderContactTerminals();
+  }
+}
+
+// click outside modal to close
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeReasonModal();
+});
 
 // ── NAVIGATION ──
 function goNext() {
   if (currentScreen === 'devices') {
     showScreen('contact');
     renderContactTerminals();
-    renderReasonFields();
     document.getElementById('btn-continue').textContent = 'Continue to summary';
     document.getElementById('btn-back').style.display = 'inline-flex';
     document.getElementById('btn-continue').disabled = false;
+    openReasonModal(0);
   } else if (currentScreen === 'contact') {
     if (!validateContact()) return;
     buildSummary();
@@ -1051,55 +1191,17 @@ function updateStepper() {
 function renderContactTerminals() {
   const el = document.getElementById('contact-terminals-list');
   el.innerHTML = terminals.map(t => `
-    <div class="terminal-summary-item">
-      <span class="terminal-summary-sn">${t.sn}</span>
-      <span class="terminal-summary-type">${t.type}</span>
+    <div class="terminal-summary-item" style="flex-direction:column;align-items:flex-start;gap:6px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+        <span class="terminal-summary-sn">${t.sn}</span>
+        <span class="terminal-summary-type">${t.type}</span>
+      </div>
+      ${reasons[t.sn] ? `<div style="font-size:12px;color:var(--text-secondary);">Reason: ${reasons[t.sn]}</div>` : ''}
+      ${descriptions[t.sn] ? `<div style="font-size:12px;color:var(--text-muted);font-style:italic;">${descriptions[t.sn]}</div>` : ''}
     </div>
   `).join('');
 }
 
-function renderReasonFields() {
-  const options = [
-    'Wrong terminal ordered',
-    'Broken - Tampering Alarm',
-    'Broken - System not working',
-    'Broken - Battery not working/no power',
-    'Broken - Display broken',
-    'Broken - Chip reader broken/not reading cards',
-    'Use Magstripe error',
-  ];
-  const el = document.getElementById('reason-fields');
-  el.innerHTML = terminals.map((t, i) => {
-    const prevReason = reasons[t.sn] || '';
-    const prevDesc = descriptions[t.sn] || '';
-    return `
-      <div class="form-field" style="margin-bottom:14px">
-        <label>
-          <span style="font-family:'Roboto Mono',monospace;color:var(--accent)">${t.sn}</span>
-          — ${t.type} <span class="required">*</span>
-        </label>
-        <div id="reason-group-${i}">
-          ${options.map((option, j) => `
-            <label class="reason-option ${prevReason === option ? 'selected' : ''}" for="reason-${i}-${j}">
-              <div class="reason-radio"><div class="reason-radio-inner"></div></div>
-              <input type="radio" id="reason-${i}-${j}" name="reason-${i}" value="${option}" hidden ${prevReason === option ? 'checked' : ''} onchange="selectReason('${t.sn}', '${option}')" />
-              <span>${option}</span>
-            </label>
-          `).join('')}
-        </div>
-        <div class="form-field">
-          <label>Description of the problem <span class="required">*</span></label>
-          <textarea id="desc-${i}" placeholder="Describe the issue as specifically as possible…" oninput="descriptions['${t.sn}']=this.value">${prevDesc}</textarea>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function selectReason(sn, value) {
-  reasons[sn] = value;
-  renderReasonFields();
-}
 
 function validateContact() {
   const fields = ['f-company','f-contact','f-email','f-street','f-number','f-zip','f-city'];
@@ -1108,21 +1210,6 @@ function validateContact() {
     const el = document.getElementById(id);
     if (!el.value.trim()) { el.style.borderColor = 'var(--error)'; ok = false; }
     else el.style.borderColor = '';
-  });
-  // check all reasons and descriptions
-  terminals.forEach((t, i) => {
-    const option = document.querySelector(`input[name="reason-${i}"]:checked`);
-    const row = document.getElementById('reason-group-' + i);
-    const desc = document.getElementById('desc-' + i);
-    if (!option) {
-      if (row) row.querySelectorAll('.reason-option').forEach(el => el.style.borderColor = 'var(--error)');
-      ok = false;
-    } else {
-      if (row) row.querySelectorAll('.reason-option').forEach(el => el.style.borderColor = '');
-      reasons[t.sn] = option.value;
-    }
-    if (!desc.value.trim()) { desc.style.borderColor = 'var(--error)'; ok = false; }
-    else { desc.style.borderColor = ''; descriptions[t.sn] = desc.value; }
   });
   if (!ok) {
     const firstError = document.querySelector('[style*="var(--error)"]');
