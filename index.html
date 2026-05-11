@@ -661,12 +661,22 @@
     margin-bottom: 16px;
   }
   .modal-terminal-icon {
-    width: 56px; height: 56px;
-    background: var(--bg);
+    width: 72px; height: 72px;
+    background: #EEF6FB;
     border-radius: 12px;
     display: flex; align-items: center; justify-content: center;
     font-size: 28px;
     flex-shrink: 0;
+    overflow: hidden;
+    padding: 6px;
+  }
+  .modal-terminal-icon img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+  }
+  .modal-terminal-emoji {
+    font-size: 28px;
+    display: flex; align-items: center; justify-content: center;
   }
   .modal-terminal-type {
     font-family: 'CocoSharp', sans-serif;
@@ -943,7 +953,10 @@
     <button class="modal-close" onclick="closeReasonModal()">✕</button>
 
     <div class="modal-header">
-      <div class="modal-terminal-icon">📟</div>
+      <div class="modal-terminal-icon">
+        <img id="modal-terminal-img" src="" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <span class="modal-terminal-emoji" style="display:none">📟</span>
+      </div>
       <div>
         <div class="modal-terminal-type" id="modal-terminal-type"></div>
         <div class="modal-terminal-sn" id="modal-terminal-sn"></div>
@@ -977,6 +990,18 @@
 
 <script>
 // ── STATE ──
+const TERMINAL_IMAGES = {
+  'P3 Air':       'terminals/p3air.webp',
+  'P3H':          'terminals/p3h.webp',
+  'P3KH':         'terminals/p3kh.webp',
+  'P2 SmartPads': 'terminals/p2smartpads.webp',
+  'P2 Mini':      'terminals/p2mini.webp',
+  'P2 Pro':       'terminals/p2pro.webp',
+  'P2 Lite SE':   'terminals/p2litese.webp',
+  'P2 SE':        'terminals/p2se.webp',
+  'P3 Mix':       'terminals/p3mix.webp',
+};
+
 const SN_MAP = {
   'PA': 'P3 Air',
   'P3': 'P3H',
@@ -1131,6 +1156,11 @@ function openReasonModal(index) {
 
   document.getElementById('modal-terminal-type').textContent = t.type;
   document.getElementById('modal-terminal-sn').textContent = 'Serial number: ' + t.sn;
+  const img = document.getElementById('modal-terminal-img');
+  const fallback = img.nextElementSibling;
+  img.style.display = 'block';
+  fallback.style.display = 'none';
+  img.src = TERMINAL_IMAGES[t.type] || '';
 
   const prog = document.getElementById('modal-progress');
   if (terminals.length > 1) {
