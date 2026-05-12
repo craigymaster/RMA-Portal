@@ -81,8 +81,10 @@
     height: 28px;
   }
   .nav-center {
-    flex: 1;
-    text-align: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
   }
   .nav-center span {
     font-size: 15px;
@@ -841,7 +843,7 @@
           <span id="detect-text"></span>
         </div>
 
-        <a href="#" class="help-link">
+        <a href="serial-number-help.html" class="help-link" target="_blank">
           <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 11a1 1 0 110-2 1 1 0 010 2zm1-3.5H7V5h2v3.5z"/></svg>
           Where can I find the serial number?
         </a>

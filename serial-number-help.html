@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Where to find the serial number — MultiSafepay RMA Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  @font-face {
+    font-family: 'CocoSharp';
+    src: url('https://www.multisafepay.com/wp-content/themes/multisafepay/fonts/CocoSharp-Bold.woff2') format('woff2');
+    font-weight: 700;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --primary: #003057;
+    --accent: #0EAAF1;
+    --bg: #F0F4F8;
+    --surface: #FFFFFF;
+    --border: #D6E4EF;
+    --text-primary: #0D1E2E;
+    --text-secondary: #4A6580;
+    --text-muted: #7B8E9F;
+    --accent-light: rgba(14,170,241,0.16);
+    --radius: 14px;
+    --shadow: 0 1px 3px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.08);
+  }
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(145deg, rgba(255,255,255,0.92), rgba(14,170,241,0.08) 55%, rgba(255,255,255,0.94)),
+      repeating-linear-gradient(135deg, rgba(14,170,241,0.06) 0px, rgba(14,170,241,0.06) 1px, transparent 1px, transparent 24px);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    min-height: 100vh;
+  }
+
+  h1, h2, h3 { font-family: 'CocoSharp', sans-serif; font-weight: 700; }
+
+  /* NAV */
+  nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-left { display: flex; align-items: center; gap: 12px; }
+  .nav-left img { display: block; height: 28px; width: auto; }
+  .nav-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .nav-center span {
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'CocoSharp', sans-serif;
+    color: var(--primary);
+    letter-spacing: -0.02em;
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .back-link:hover { text-decoration: underline; }
+
+  /* MAIN */
+  .main { max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .page-title {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+  .page-subtitle {
+    font-size: 15px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 40px;
+    line-height: 1.5;
+  }
+
+  /* METHOD CARDS */
+  .methods { display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; }
+
+  .method-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-left: 6px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .method-number {
+    width: 36px; height: 36px;
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'CocoSharp', sans-serif;
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .method-body h3 {
+    font-size: 15px;
+    font-family: 'CocoSharp', sans-serif;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+  }
+  .method-body p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .method-body .sn-example {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--accent-light);
+    color: var(--accent);
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  /* STEPS */
+  .steps { list-style: none; margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+  .steps li {
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding-left: 18px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .steps li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 12px;
+    top: 2px;
+  }
+
+  /* PREFIX TABLE */
+  .prefix-section {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .prefix-header {
+    padding: 14px 20px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'CocoSharp', sans-serif;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th, td {
+    padding: 11px 20px;
+    text-align: left;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+  }
+  tr:last-child td { border-bottom: none; }
+  th {
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: #fafcff;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  td:first-child {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 500;
+    color: var(--accent);
+  }
+  td:last-child { color: var(--text-secondary); }
+
+  /* INFO BANNER */
+  .info-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 18px;
+    background: #f0f4ff;
+    border: 1px solid #c5d4fc;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #1e3a8a;
+    line-height: 1.5;
+    margin-top: 24px;
+  }
+  .info-note svg { flex-shrink: 0; margin-top: 1px; }
+
+  /* BACK BUTTON */
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 32px;
+    padding: 10px 22px;
+    background: var(--accent);
+    color: var(--primary);
+    border: none;
+    border-radius: 8px;
+    font-family: 'CocoSharp', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background .15s;
+  }
+  .back-btn:hover { background: #0d9fd8; }
+
+  @media (max-width: 480px) {
+    nav { padding: 0 16px; }
+    .main { padding: 28px 16px 60px; }
+    .page-title { font-size: 22px; }
+    .method-card { padding: 18px 20px; gap: 14px; }
+    th, td { padding: 10px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <img src="logo.png" alt="MultiSafepay" height="28"/>
+  </div>
+  <div class="nav-center">
+    <span>MultiSafepay RMA Portal</span>
+  </div>
+  <a href="index.html" class="back-link">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+    Back to portal
+  </a>
+</nav>
+
+<div class="main">
+  <h1 class="page-title">Where to find the serial number</h1>
+  <p class="page-subtitle">The serial number uniquely identifies your terminal. Here's how to locate it.</p>
+
+  <div class="methods">
+
+    <div class="method-card">
+      <div class="method-number">1</div>
+      <div class="method-body">
+        <h3>Label on the back of the device</h3>
+        <p>Turn the terminal over. On the back you will find a sticker with a barcode. The serial number is printed directly below the barcode and is labelled <strong>S/N</strong> or <strong>SN</strong>.</p>
+        <span class="sn-example">Example: PA1234567890123</span>
+      </div>
+    </div>
+
+    <div class="method-card">
+      <div class="method-number">2</div>
+      <div class="method-body">
+        <h3>Via the device settings</h3>
+        <p>You can also find the serial number in the device menu:</p>
+        <ul class="steps">
+          <li>Open <strong>Settings</strong> on the terminal</li>
+          <li>Go to <strong>About device</strong> or <strong>About phone</strong></li>
+          <li>The serial number is listed under <strong>Serial number</strong> or <strong>SN</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="method-card">
+      <div class="method-number">3</div>
+      <div class="method-body">
+        <h3>On the original packaging</h3>
+        <p>The serial number is also printed on the barcode label of the original box the terminal came in, under the heading <strong>SN</strong> or <strong>Serial No</strong>.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="prefix-section">
+    <div class="prefix-header">Serial number prefixes per terminal type</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Prefix</th>
+          <th>Terminal type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>PA…</td><td>P3 Air</td></tr>
+        <tr><td>P3…</td><td>P3H</td></tr>
+        <tr><td>PK…</td><td>P3KH</td></tr>
+        <tr><td>PD…</td><td>P2 SmartPads</td></tr>
+        <tr><td>PN…</td><td>P2 Mini</td></tr>
+        <tr><td>P2…</td><td>P2 Pro</td></tr>
+        <tr><td>PC…</td><td>P2 Lite SE</td></tr>
+        <tr><td>TJ…</td><td>P2 SE</td></tr>
+        <tr><td>PF…</td><td>P3 Mix</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-note">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 11a1 1 0 110-2 1 1 0 010 2zm1-3.5H7V5h2v3.5z"/></svg>
+    The serial number is always <strong>13 characters</strong> long and consists of letters and numbers. Make sure you enter the full number exactly as shown on the label.
+  </div>
+
+  <a href="index.html" class="back-btn">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+    Back to RMA Portal
+  </a>
+</div>
+
+</body>
+</html>
